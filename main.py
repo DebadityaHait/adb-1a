@@ -43,7 +43,7 @@ def run():
             print(f"Processing {pdf_path}...")
             
             # Process the PDF using the inference pipeline
-            result_json = pipeline.process_pdf(pdf_path)
+            result = pipeline.process_pdf(pdf_path)
 
             # Determine the output filename
             pdf_filename = Path(pdf_path).stem
@@ -51,9 +51,9 @@ def run():
 
             # Save the output
             with open(output_path, 'w', encoding='utf-8') as f:
-                json.dump(result_json, f, ensure_ascii=False, indent=4)
+                json.dump(result, f, ensure_ascii=False, indent=4)
             
-            print(f"Successfully processed and saved output to {output_path}")
+            print(f"Successfully processed '{result['title']}' with {len(result['outline'])} headings and saved to {output_path}")
 
         except Exception as e:
             print(f"Error processing {pdf_path}: {e}")

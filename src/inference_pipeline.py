@@ -58,7 +58,7 @@ class InferencePipeline:
             self.logger.error(f"Error loading models: {str(e)}")
             raise
     
-    def process_pdf(self, pdf_path: str) -> List[Dict[str, Any]]:
+    def process_pdf(self, pdf_path: str) -> Dict[str, Any]:
         """
         Process a single PDF and extract headings.
         
@@ -77,7 +77,7 @@ class InferencePipeline:
             
             if not text_blocks:
                 self.logger.warning(f"No text blocks extracted from {pdf_path}")
-                return []
+                return {"title": "", "outline": []}
             
             # Step 2: Calculate document statistics
             doc_stats = self.pdf_extractor.get_document_stats(text_blocks)
@@ -103,19 +103,19 @@ class InferencePipeline:
                     pred["final_confidence"] = pred.get("rule_confidence", 0.0)
             
             # Step 7: Convert to output format
-            headings = self._convert_to_output_format(final_predictions)
+            result = self._convert_to_output_format(final_predictions)
             
             processing_time = time.time() - start_time
-            self.logger.info(f"Processed {pdf_path} in {processing_time:.2f}s, found {len(headings)} headings")
+            self.logger.info(f"Processed {pdf_path} in {processing_time:.2f}s, found {len(result['outline'])} headings, title: '{result['title']}'")
             
-            return headings
+            return result
             
         except Exception as e:
             self.logger.error(f"Error processing {pdf_path}: {str(e)}")
-            return []
+            return {"title": "", "outline": []}
     
-    def _convert_to_output_format(self, predictions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Convert predictions to the required JSON output format."""
+    def _convert_to_output_format(self, predictions: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Convert predictions to the required JSON output format with title extraction."""
         headings = []
         
         for pred in predictions:
@@ -123,7 +123,9 @@ class InferencePipeline:
                 heading = {
                     "level": pred.get("final_predicted_level"),
                     "text": pred.get("text", "").strip(),
-                    "page": pred.get("page", 1)
+                    "page": pred.get("page", 1),
+                    "font_size": pred.get("font_size", 0),  # Include font size for title detection
+                    "y0": pred.get("y0", 0),  # Include position for proximity check
                 }
                 
                 # Validate heading
@@ -136,7 +138,75 @@ class InferencePipeline:
             if p.get("text") == x["text"] and p.get("page") == x["page"]
         ))))
         
-        return headings
+        # Extract title from first page headings
+        title = self._extract_title_from_headings(headings)
+        
+        # Remove title from outline and clean up temporary properties
+        outline = []
+        for heading in headings:
+            if heading["text"] != title:
+                outline.append({
+                    "level": heading["level"],
+                    "text": heading["text"],
+                    "page": heading["page"]
+                })
+        
+        return {
+            "title": title,
+            "outline": outline
+        }
+    
+    def _extract_title_from_headings(self, headings: List[Dict[str, Any]]) -> str:
+        """
+        Extract title from the largest heading among the first 4 headings in close proximity on the first page.
+        
+        Args:
+            headings: List of all detected headings
+            
+        Returns:
+            Title text, or empty string if no suitable title found
+        """
+        if not headings:
+            return ""
+        
+        # Filter headings on the first page
+        first_page_headings = [h for h in headings if h["page"] == 1]
+        
+        if not first_page_headings:
+            return ""
+        
+        # Take first 4 headings and check if they're in close proximity
+        candidate_headings = first_page_headings[:4]
+        
+        if len(candidate_headings) == 1:
+            return candidate_headings[0]["text"]
+        
+        # Check proximity - headings should be within reasonable vertical distance
+        # (e.g., within the top 30% of the page)
+        if len(candidate_headings) > 1:
+            # Sort by vertical position (y0)
+            candidate_headings.sort(key=lambda x: x.get("y0", 0))
+            
+            # Check if first 4 are in close proximity (within 200 points vertically)
+            first_y = candidate_headings[0].get("y0", 0)
+            proximity_threshold = 200
+            
+            close_headings = []
+            for heading in candidate_headings:
+                if abs(heading.get("y0", 0) - first_y) <= proximity_threshold:
+                    close_headings.append(heading)
+                else:
+                    break  # Stop when we find headings too far apart
+        else:
+            close_headings = candidate_headings
+        
+        if not close_headings:
+            return first_page_headings[0]["text"]
+        
+        # Among close headings, find the one with largest font size
+        title_heading = max(close_headings, key=lambda x: x.get("font_size", 0))
+        
+        return title_heading["text"]
     
     def batch_process(self, input_dir: str, output_dir: str, 
                      file_pattern: str = "*.pdf") -> Dict[str, Any]:
@@ -182,24 +252,25 @@ class InferencePipeline:
                 file_start_time = time.time()
                 
                 # Process PDF
-                headings = self.process_pdf(str(pdf_file))
+                result = self.process_pdf(str(pdf_file))
                 
                 # Save results
                 output_file = output_path / f"{pdf_file.stem}.json"
                 with open(output_file, 'w', encoding='utf-8') as f:
-                    json.dump(headings, f, indent=2, ensure_ascii=False)
+                    json.dump(result, f, indent=2, ensure_ascii=False)
                 
                 # Update statistics
                 processing_time = time.time() - file_start_time
                 stats["processed"] += 1
-                stats["total_headings"] += len(headings)
+                stats["total_headings"] += len(result["outline"])
                 stats["files"][pdf_file.name] = {
-                    "headings_found": len(headings),
+                    "title": result["title"],
+                    "headings_found": len(result["outline"]),
                     "processing_time": processing_time,
                     "output_file": str(output_file)
                 }
                 
-                self.logger.info(f"Saved {len(headings)} headings to {output_file}")
+                self.logger.info(f"Saved '{result['title']}' with {len(result['outline'])} headings to {output_file}")
                 
             except Exception as e:
                 self.logger.error(f"Failed to process {pdf_file}: {str(e)}")

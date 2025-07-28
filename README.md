@@ -40,4 +40,21 @@ The solution is containerized using Docker and is designed to run completely off
     # For Windows (PowerShell)
     docker run --rm -v ${pwd}/input:/app/input -v ${pwd}/output:/app/output --network none mysolutionname:somerandomidentifier
     ```
-    The container will automatically process all PDFs in `/app/input` and generate corresponding `.json` files in `/app/output`. 
+    The container will automatically process all PDFs in `/app/input` and generate corresponding `.json` files in `/app/output`.
+
+## Output Format
+
+The system outputs JSON files with the following structure:
+
+```json
+{
+  "title": "Understanding AI",
+  "outline": [
+    { "level": "H1", "text": "Introduction", "page": 1 },
+    { "level": "H2", "text": "What is AI?", "page": 2 },
+    { "level": "H3", "text": "History of AI", "page": 3 }
+  ]
+}
+```
+
+The title is automatically extracted from the largest heading among the first 4 headings in close proximity on the first page. 
