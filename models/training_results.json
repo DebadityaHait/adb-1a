@@ -1,0 +1,265 @@
+{
+  "total_training_blocks": 27109,
+  "dataset_analysis": {
+    "total_blocks": 27109,
+    "heading_distribution": {
+      "H1": 197,
+      "H2": 759,
+      "H3": 378,
+      "non_heading": 25746
+    },
+    "feature_statistics": {
+      "font_size_ratio": {
+        "mean": 1.0,
+        "std": 0.08197078981469724,
+        "min": 0.356507135185878,
+        "max": 2.0979595477168247
+      },
+      "font_size_normalized": {
+        "mean": 0.5045813708140544,
+        "std": 0.3014695148331659,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "is_bold": {
+        "mean": 0.16319303552325795,
+        "std": 0.3695485169049585,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "is_italic": {
+        "mean": 0.07694861485115645,
+        "std": 0.2665148132694778,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "is_serif": {
+        "mean": 0.346711424250249,
+        "std": 0.47593168428673577,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "is_sans_serif": {
+        "mean": 0.37725478623335423,
+        "std": 0.48470844749805364,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "is_monospace": {
+        "mean": 0.0027666088752812718,
+        "std": 0.052526722028089216,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "indentation": {
+        "mean": 167.3803523794614,
+        "std": 125.24801354726642,
+        "min": 4.440000057220459,
+        "max": 584.6906127929688
+      },
+      "spacing_before": {
+        "mean": 5.244545691174017,
+        "std": 40.204144161800905,
+        "min": 0.0,
+        "max": 765.4688997268677
+      },
+      "spacing_after": {
+        "mean": 5.244545691174017,
+        "std": 40.204144161800905,
+        "min": 0.0,
+        "max": 765.4688997268677
+      }
+    },
+    "document_count": 1
+  },
+  "ml_training": {
+    "cv_mean_score": 0.9323341709865662,
+    "cv_std_score": 0.020058219594856815,
+    "feature_importance": {
+      "font_size_ratio": 0.08621891191719097,
+      "font_size_normalized": 0.07579427160379845,
+      "is_bold": 0.043614513928709776,
+      "is_italic": 0.005605489623791577,
+      "is_serif": 0.008991535406295948,
+      "is_sans_serif": 0.013927197258620653,
+      "is_monospace": 0.0006537738700578267,
+      "indentation": 0.059032539695256965,
+      "spacing_before": 0.050649396781714734,
+      "spacing_after": 0.042269573533017225,
+      "spacing_ratio": 0.045356652171295725,
+      "block_width": 0.036902209022556906,
+      "block_height": 0.07454864214000523,
+      "aspect_ratio": 0.03869092678190832,
+      "text_length": 0.02839027434632987,
+      "word_count": 0.01553713125490191,
+      "avg_word_length": 0.0311964978861948,
+      "is_all_caps": 0.0060815785991537264,
+      "is_title_case": 0.008152138428890544,
+      "has_initial_cap": 0.011850260340249268,
+      "caps_ratio": 0.053905382936697555,
+      "ends_with_colon": 0.012830206011388325,
+      "ends_with_period": 0.0011006958166116028,
+      "has_numbers": 0.006176949461774536,
+      "punctuation_ratio": 0.022727321300105022,
+      "is_numbered": 0.0010993014530222814,
+      "is_bulleted": 1.3548265400287069e-06,
+      "relative_position": 0.07475939557216221,
+      "is_first_on_page": 0.02013323026010022,
+      "is_last_on_page": 0.00019416744546396988,
+      "prev_font_size_ratio": 0.015910137884958084,
+      "prev_same_font": 0.012756153925126483,
+      "next_font_size_ratio": 0.017164401646610452,
+      "next_same_font": 0.015115949200207916,
+      "relative_page_position": 0.037495199400097594,
+      "is_top_of_page": 0.01367554681230109,
+      "is_middle_of_page": 0.010888815134494594,
+      "is_bottom_of_page": 0.0006022763223976961
+    },
+    "top_features": [
+      [
+        "font_size_ratio",
+        0.08621891191719097
+      ],
+      [
+        "font_size_normalized",
+        0.07579427160379845
+      ],
+      [
+        "relative_position",
+        0.07475939557216221
+      ],
+      [
+        "block_height",
+        0.07454864214000523
+      ],
+      [
+        "indentation",
+        0.059032539695256965
+      ],
+      [
+        "caps_ratio",
+        0.053905382936697555
+      ],
+      [
+        "spacing_before",
+        0.050649396781714734
+      ],
+      [
+        "spacing_ratio",
+        0.045356652171295725
+      ],
+      [
+        "is_bold",
+        0.043614513928709776
+      ],
+      [
+        "spacing_after",
+        0.042269573533017225
+      ]
+    ],
+    "evaluation": {
+      "classification_report": {
+        "H1": {
+          "precision": 0.7211895910780669,
+          "recall": 0.9847715736040609,
+          "f1-score": 0.8326180257510729,
+          "support": 197.0
+        },
+        "H2": {
+          "precision": 0.6288288288288288,
+          "recall": 0.919631093544137,
+          "f1-score": 0.7469234884965222,
+          "support": 759.0
+        },
+        "H3": {
+          "precision": 0.6171735241502684,
+          "recall": 0.9126984126984127,
+          "f1-score": 0.736392742796158,
+          "support": 378.0
+        },
+        "H4": {
+          "precision": 0.48333333333333334,
+          "recall": 1.0,
+          "f1-score": 0.651685393258427,
+          "support": 29.0
+        },
+        "non_heading": {
+          "precision": 0.9969336147505078,
+          "recall": 0.9723452186747455,
+          "f1-score": 0.9844859114772795,
+          "support": 25746.0
+        },
+        "accuracy": 0.9701575122652993,
+        "macro avg": {
+          "precision": 0.6894917784282011,
+          "recall": 0.9578892597042712,
+          "f1-score": 0.790421112355892,
+          "support": 27109.0
+        },
+        "weighted avg": {
+          "precision": 0.9787788754541111,
+          "recall": 0.9701575122652993,
+          "f1-score": 0.9729156475309787,
+          "support": 27109.0
+        }
+      },
+      "confusion_matrix": "[[  194     1     0     0     2]\n [    4   698     9     0    48]\n [    0     6   345     0    27]\n [    0     0     0    29     0]\n [   71   405   205    31 25034]]",
+      "accuracy": 0.9701575122652993,
+      "macro_f1": 0.790421112355892,
+      "weighted_f1": 0.9729156475309787
+    }
+  },
+  "hybrid_evaluation": {
+    "performance_metrics": {
+      "H1": {
+        "precision": 0.71875,
+        "recall": 0.934010152284264,
+        "f1_score": 0.8123620309050772,
+        "true_positives": 184,
+        "false_positives": 72,
+        "false_negatives": 13
+      },
+      "H2": {
+        "precision": 0.6297010607521697,
+        "recall": 0.8603425559947299,
+        "f1_score": 0.7271714922048997,
+        "true_positives": 653,
+        "false_positives": 384,
+        "false_negatives": 106
+      },
+      "H3": {
+        "precision": 0.6108870967741935,
+        "recall": 0.8015873015873016,
+        "f1_score": 0.6933638443935927,
+        "true_positives": 303,
+        "false_positives": 193,
+        "false_negatives": 75
+      },
+      "overall": {
+        "precision": 0.6372275013974288,
+        "recall": 0.8545727136431784,
+        "f1_score": 0.7300672430355428,
+        "accuracy": 0.967354015271681
+      }
+    },
+    "hybrid_statistics": {
+      "total_blocks": 27109,
+      "predicted_headings": 1846,
+      "decision_methods": {
+        "ml_dominant": 27055,
+        "weighted_combination": 54
+      },
+      "heading_levels": {
+        "H1": 256,
+        "H2": 1037,
+        "H3": 496
+      },
+      "average_confidence": 0.7781205922202256,
+      "high_confidence_count": 20164,
+      "low_confidence_count": 327,
+      "hierarchy_adjustments": 7,
+      "filtered_predictions": 152
+    }
+  },
+  "models_saved": true
+}
